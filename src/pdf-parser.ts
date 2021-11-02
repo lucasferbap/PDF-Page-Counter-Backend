@@ -1,12 +1,11 @@
 import Page from "./Page";
 import PDF from "./PDF";
 import fs from 'fs'
-
-const resolve = require('path').resolve
+import path from 'path'
 
 const PDFParser = require("pdf2json");
 
-const uploadsPath = resolve("./uploads")
+const uploadsPath = path.resolve(__dirname, '..', 'uploads')
 
 const papers = [
     {
@@ -121,6 +120,7 @@ const countPages = async() => {
         return new Promise((resolve, reject) => {
             var pdfParser = new PDFParser();
             let fileLocation = `${uploadsPath}/${file}`;
+            console.log(fileLocation)
             pdfParser.loadPDF(fileLocation);
 
             pdfParser.on("pdfParser_dataError", (errData: { parserError: any; }) => {
@@ -138,7 +138,7 @@ const countPages = async() => {
                 });
                 const groupedSizes = groupSizes(pagesResponse, page => page.size)
                 pdf.push(new PDF(pagesResponse.length, pagesResponse, file, groupedSizes))
-                fs.unlink(`${uploadsPath}/${file}`, err => {console.log(err)})
+                fs.unlink(fileLocation, err => {console.log(err)})
                 resolve(pdf)
             })
         })
