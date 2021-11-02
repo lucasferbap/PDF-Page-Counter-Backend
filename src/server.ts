@@ -30,6 +30,4 @@ app.post('/', upload.array('file'), (request, response) => {
     return response.status(201).send({ message: "Arquivo enviado com sucesso" })
 })
 
-app.listen(3333,() => {
-    console.log('Server started on port 3333')
-})
+app.listen(process.env.PORT || 3333)
