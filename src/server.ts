@@ -22,8 +22,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.get('/', async (request, response) => { 
-    const res = await countPages()
-    return response.status(200).send(res)
+    try {
+        const res = await countPages()
+        return response.status(200).send(res)
+        
+    } catch (error) {
+        return response.status(200).send(error)      
+    }
 })
 
 app.post('/', upload.array('file'), (request, response) => {    
