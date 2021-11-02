@@ -2,7 +2,10 @@ import express from 'express'
 import multer from 'multer'
 import countPages from './pdf-parser';
 import cors from 'cors';
+import fs from 'fs'
+import path from 'path'
 
+const uploadsPath = path.resolve(__dirname, '..', 'uploads')
 
 const app = express();
 app.use(cors());
@@ -11,6 +14,9 @@ app.use(cors());
 // Configuração de armazenamento
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        if (!fs.existsSync(uploadsPath)){
+            fs.mkdirSync(uploadsPath)
+        }
         cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
