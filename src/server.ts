@@ -4,6 +4,7 @@ import countPages from './pdf-parser';
 import cors from 'cors';
 import fs from 'fs'
 import path from 'path'
+import ContadorGeral from './ContadorGeral';
 
 const uploadsPath = path.resolve(__dirname, '..', 'uploads')
 const app = express();

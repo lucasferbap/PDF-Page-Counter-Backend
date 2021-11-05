@@ -2,6 +2,7 @@ import Page from "./Page";
 import PDF from "./PDF";
 import fs from 'fs'
 import path from 'path'
+import ContadorGeral from "./ContadorGeral";
 
 const PDFParser = require("pdf2json");
 
@@ -115,7 +116,7 @@ const groupSizes = (pages:Page[], keyGetter: (arg0: any) => any) => {
 }
 
 const countPages = async(array_arquivos: string[]) => {
-    var pdf: PDF[] = []
+    let count = new ContadorGeral()
     console.log(array_arquivos)
     const promisses = array_arquivos.map(file => {
         return new Promise((resolve, reject) => {
@@ -139,14 +140,16 @@ const countPages = async(array_arquivos: string[]) => {
                     pagesResponse.push(new Page(pageSizeIdentifier(width, height), index+1))
                 });
                 const groupedSizes = groupSizes(pagesResponse, page => page.size)
-                pdf.push(new PDF(pagesResponse.length, pagesResponse, file, groupedSizes))
+                count.assingPDF(new PDF(pagesResponse.length, pagesResponse, file, groupedSizes))
                 fs.unlink(fileLocation, err => {console.log(err)})
-                resolve(pdf)
+                resolve(count)
             })
+
+
         })
     })
     await Promise.all(promisses)
-    return pdf
+    return count
 }
 
 export default countPages
