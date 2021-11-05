@@ -114,10 +114,10 @@ const groupSizes = (pages:Page[], keyGetter: (arg0: any) => any) => {
     return Object.fromEntries(map);
 }
 
-const countPages = async() => {
+const countPages = async(array_arquivos: string[]) => {
     var pdf: PDF[] = []
-    
-    const promisses = fs.readdirSync(uploadsPath).map(file => {
+    console.log(array_arquivos)
+    const promisses = array_arquivos.map(file => {
         return new Promise((resolve, reject) => {
             var pdfParser = new PDFParser();
 

@@ -6,15 +6,7 @@ import fs from 'fs'
 import path from 'path'
 
 const uploadsPath = path.resolve(__dirname, '..', 'uploads')
-
 const app = express();
-app.use(function (req, res, next){
-    if (req.headers['x-forwarded-proto'] === 'https') {
-      res.redirect('http://' + req.hostname + req.url);
-    } else {
-      next();
-    }
-});
 app.use(cors());
 
 
@@ -36,7 +28,8 @@ const upload = multer({ storage });
 
 app.get('/', async (request, response) => { 
     try {
-        const res = await countPages()
+        const files = request.query.files as string
+        const res = await countPages(JSON.parse(files))
         return response.status(200).send(res)
         
     } catch (error) {
@@ -44,8 +37,16 @@ app.get('/', async (request, response) => {
     }
 })
 
-app.post('/', upload.array('file'), (request, response) => {    
-    return response.status(201).send({ message: "Arquivo enviado com sucesso" })
+app.post('/', upload.array('file'), (request, response) => {
+    const files: string[] = []
+    const recivedFiles = request.files as unknown as File[]
+    recivedFiles.forEach((file: any) => {
+        files.push(file.filename)
+    })
+    return response.status(201).send({ 
+        message: "Arquivo enviado com sucesso",
+        files
+    })
 })
 
 app.listen(process.env.PORT || 3333)
